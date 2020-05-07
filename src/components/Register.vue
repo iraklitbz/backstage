@@ -88,6 +88,18 @@ export default {
       error: null
     };
   },
-
+  methods: {
+    async submit() {
+        const { user } = firebase.auth().createUserWithEmailAndPassword(this.form.email, this.form.password)
+        if (user) {
+            const result = await db.collection('userInfo').add({
+                uid: user.uid,
+                name: this.name,
+                surname: this.email
+            })
+    }
+      
+    }
+  }
 };
 </script>
