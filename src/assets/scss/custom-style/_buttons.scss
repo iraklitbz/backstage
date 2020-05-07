@@ -1,0 +1,299 @@
+// --------------------------------
+// (START) Global Editor code https://codyhouse.co/ds/globals/buttons
+// --------------------------------
+:root {
+    --btn-font-size: 1em;
+    --btn-font-size-sm: calc(var(--btn-font-size) - 0.2em);
+    --btn-font-size-md: calc(var(--btn-font-size) + 0.2em);
+    --btn-font-size-lg: calc(var(--btn-font-size) + 0.4em);
+    --btn-padding-x: var(--space-sm); // padding left + right
+    --btn-padding-y: var(--space-xs); // padding top + bottom
+    --btn-radius: 0.25em;
+}
+
+.btn {
+    // basic button style
+    box-shadow: 0 4px 16px alpha(var(--color-black), 0.15);
+    cursor: pointer;
+}
+
+// themes
+.btn--primary {
+    @include fontSmooth;
+}
+
+.btn--accent {
+    @include fontSmooth;
+}
+
+.btn--subtle {}
+
+// feedback
+.btn--disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+// sizes
+.btn--sm {}
+
+.btn--md {}
+
+.btn--lg {}
+
+// --------------------------------
+// (END) Global Editor Code
+// --------------------------------
+
+/* -------------------------------- 
+
+File#: _2_dropdown
+Title: Dropdown
+Descr: A hoverable link that toggles the visibility of a dropdown list
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+:root {
+    --dropdown-item-padding: var(--space-xxs) var(--space-sm);
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown__menu {
+    width: 200px;
+    border-radius: var(--radius-md);
+    padding: var(--space-xxs) 0;
+    background-color: var(--color-bg);
+    box-shadow: var(--shadow-sm);
+    z-index: var(--zindex-popover);
+    position: absolute;
+    left: 0;
+    top: 100%;
+    // reset spacing and text units - no longer affected by em units
+    @include spaceUnit(1rem);
+    @include textUnit(1rem);
+    // hide
+    clip: rect(1px, 1px, 1px, 1px);
+    clip-path: inset(50%);
+}
+
+.dropdown__wrapper:hover>.dropdown__menu,
+.dropdown__sub-wrapper:hover>.dropdown__menu {
+    // show dropdown menu
+    clip: auto;
+    clip-path: none;
+}
+
+.dropdown__sub-wrapper:hover>.dropdown__menu {
+    left: 100%;
+}
+
+.dropdown__item {
+    display: block;
+    text-decoration: none;
+    color: var(--color-contrast-high);
+    padding: var(--dropdown-item-padding);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &:hover,
+    &.dropdown__item--hover {
+        background-color: var(--color-contrast-lower);
+    }
+}
+
+.dropdown__separator {
+    // h line divider
+    height: 1px;
+    background-color: var(--color-contrast-low);
+    margin: var(--dropdown-item-padding);
+}
+
+.dropdown__sub-wrapper {
+    position: relative;
+    >.dropdown__item {
+        // item w/ right arrow
+        position: relative;
+        padding-right: calc(var(--space-sm) + 12px);
+        .icon {
+            // right arrow
+            position: absolute;
+            display: block;
+            width: 12px;
+            height: 12px;
+            right: var(--space-xxs);
+            top: calc(50% - 6px);
+        }
+    }
+    >.dropdown__menu {
+        // sub menu
+        top: calc(var(--space-xxs) * -1);
+        box-shadow: var(--shadow-md);
+    }
+}
+
+.js {
+    // add animations if JS = enabled
+    .dropdown__menu {
+        top: calc(100% + 4px); // add a 4px margin between trigger and dropdown
+    }
+    .dropdown__sub-wrapper {
+        .dropdown__menu {
+            top: calc(var(--space-xxs) * -1);
+        }
+    }
+    .dropdown__menu--is-visible {
+        clip: auto;
+        clip-path: none;
+        animation: dropdown-show 0.2s forwards;
+    }
+    .dropdown__menu--is-hidden {
+        animation: dropdown-hide 0.2s;
+    }
+    .dropdown__sub-wrapper>.dropdown__menu--is-visible,
+    .dropdown__sub-wrapper>.dropdown__menu--is-hidden {
+        left: 100%;
+        &.dropdown__menu--left {
+            left: -100%;
+        }
+    }
+}
+
+@keyframes dropdown-show {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes dropdown-hide {
+    0% {
+        clip: auto;
+        clip-path: none;
+        opacity: 1;
+    }
+    100% {
+        clip: auto;
+        clip-path: none;
+        opacity: 0;
+    }
+}
+
+
+/* The switch - the box around the slider */
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+
+/* Hide default HTML checkbox */
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+
+/* The slider */
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider.checked {
+    background-color: var(--color-success);
+}
+
+.slider.checked {
+    box-shadow: 0 0 1px var;
+}
+
+.slider.checked:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+
+/* Rounded sliders */
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.file-upload {
+    .file-upload__input {
+        // visually hide input file element
+        @include srHide;
+        width: 1px;
+        height: 1px;
+    }
+    .file-upload__text--has-max-width {
+        // set a max width to the label text
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .file-upload__label {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+.uploader-file {
+    width: 100%;
+    margin-top: 10px;
+    display: none;
+}
+
+.uploader-file.active {
+    width: 100%;
+    margin-top: 10px;
+    display: block;
+}
+
+.btn-pdftoprint {
+    cursor: pointer;
+    text-decoration: none;
+    color: #999;
+    transition: color 0.2s linear;
+    &:hover {
+        color: #333;
+    }
+}
