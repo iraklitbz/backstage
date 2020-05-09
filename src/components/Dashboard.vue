@@ -1,402 +1,359 @@
 <template>
-  <div class="flex-main-panel">
-    <navbar></navbar>
-    <div class="main-content-table">
-      <div class="product-list">
-        <h2>Todo</h2>
-        <div class="list-moduel">
-          <table
-            class="table table--expanded@sm position-relative z-index-1 width-100% js-table"
-            aria-label="Table"
-          >
-            <thead class="table__header table__header--sticky">
-              <tr class="table__row">
-                <th class="table__cell text-left" scope="col">Customer ID</th>
-                <th class="table__cell text-left" scope="col">Email</th>
-                <th class="table__cell text-left" scope="col">Product</th>
-                <th class="table__cell text-left" scope="col">Date</th>
-                <th class="table__cell text-left" scope="col">Action</th>
-                <th
-                  v-if="artistRole === true"
-                  class="table__cell text-left"
-                  scope="col"
-                >
-                  Draw start
-                </th>
-                <th
-                  v-if="artistRole === true"
-                  class="table__cell text-left"
-                  scope="col"
-                >
-                  Draw finish
-                </th>
-                <th
-                  v-if="!artistRole"
-                  class="table__cell text-left"
-                  scope="col"
-                >
-                  Print status
-                </th>
-                <th
-                  v-if="artistRole === true"
-                  class="table__cell text-left"
-                  scope="col"
-                >
-                  Original book file
-                </th>
-                <th
-                  v-if="artistRole === true"
-                  class="table__cell text-left"
-                  scope="col"
-                >
-                  Images
-                </th>
+  <div>
+    <div class="int-table text-sm js-int-table">
+  <div class="int-table__inner">
+    <table class="int-table__table" aria-label="Interactive table example">
+      <thead class="int-table__header js-int-table__header">
+        <tr class="int-table__row">
+          <td class="int-table__cell">
+            <div class="custom-checkbox int-table__checkbox">
+              <input class="custom-checkbox__input js-int-table__select-all" type="checkbox" aria-label="Select all rows"/>
+              <div class="custom-checkbox__control" aria-hidden="true"></div>
+            </div>
+          </td>
 
-                <th class="table__cell text-left" scope="col">
-                  Upload work (PDF)
-                </th>
-                <th
-                  v-if="printerRole === true"
-                  class="table__cell text-left"
-                  scope="col"
-                >
-                  Finished
-                </th>
-              </tr>
-            </thead>
-
-            <tbody class="table__body">
-              <tr
-                v-for="order in orderCollection"
-                :key="order.key"
-                class="table__row"
-              >
-                <td class="table__cell" role="cell">
-                  <span class="table__label" aria-hidden="true">
-                    Customer ID</span
-                  >
-                  {{ order.customerID }}
-                </td>
-                <td class="table__cell" role="cell">
-                  <span class="table__label" aria-hidden="true"> Email</span>
-                  {{ order.customermail }}
-                </td>
-
-                <td class="table__cell" role="cell">
-                  <span class="table__label" aria-hidden="true">Product:</span>
-                  {{ order.product }}
-                </td>
-
-                <td class="table__cell text-nowrap" role="cell">
-                  <span class="table__label" aria-hidden="true">Date:</span>
-                  {{ order.date }}
-                </td>
-
-                <td class="table__cell" role="cell">
-                  <span class="table__label" aria-hidden="true">Action:</span>
-
-                  <nav class="dropdown js-dropdown">
-                    <ul>
-                      <li class="dropdown__wrapper">
-                        <a
-                          href="#0"
-                          class="dropdown__trigger inline-flex items-center"
-                        >
-                          <span>Dropdown Link</span>
-                          <svg
-                            aria-hidden="true"
-                            class="icon margin-left-xxxs"
-                            viewBox="0 0 16 16"
-                          >
-                            <polyline
-                              fill="none"
-                              stroke-width="1"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-miterlimit="10"
-                              points="3.5,6.5 8,11 12.5,6.5 "
-                            ></polyline>
-                          </svg>
-                        </a>
-
-                        <ul class="dropdown__menu" aria-label="submenu">
-                          <li>
-                            <a href="#0" class="dropdown__item">Item One</a>
-                          </li>
-                          <li>
-                            <a href="#0" class="dropdown__item">Item Two</a>
-                          </li>
-
-                          <li>
-                            <a href="#0" class="dropdown__item">Item Four</a>
-                          </li>
-                          <li class="dropdown__separator" role="separator"></li>
-                          <li>
-                            <a href="#0" class="dropdown__item">Item Five</a>
-                          </li>
-                        </ul>
-                      </li>
-                    </ul>
-                  </nav>
-                </td>
-                <td
-                  v-if="artistRole === true"
-                  class="table__cell text-nowrap"
-                  role="cell"
-                >
-                  <span class="table__label" aria-hidden="true"
-                    >Draw start:</span
-                  >
-                  <label class="switch">
-                    <input type="checkbox" />
-                    <span
-                      class="slider round"
-                      :class="{ checked: artist.drawStart }"
-                      @click.prevent="drawIsStart(order.key, user.data.email)"
-                    ></span>
-                  </label>
-                </td>
-                <td
-                  v-if="artistRole === true"
-                  class="table__cell text-nowrap"
-                  role="cell"
-                >
-                  <span class="table__label" aria-hidden="true"
-                    >Draw finish:</span
-                  >
-                  <label class="switch">
-                    <input type="checkbox" />
-                    <span
-                      class="slider round"
-                      :class="{ checked: artist.drawFinish }"
-                      @click.prevent="drawIsFinish(order.key)"
-                    ></span>
-                  </label>
-                </td>
-                <td
-                  v-if="printerRole === true"
-                  class="table__cell text-nowrap"
-                  role="cell"
-                >
-                  <span class="table__label" aria-hidden="true"
-                    >Print status:</span
-                  >
-                  <label class="switch">
-                    <input type="checkbox" />
-                    <span
-                      class="slider round"
-                      :class="{ checked: order.printdone }"
-                      @click.prevent="printStatus(order.key)"
-                    ></span>
-                  </label>
-                </td>
-
-                <td
-                  v-if="artistRole === true"
-                  class="table__cell text-nowrap"
-                  role="cell"
-                >
-                  <span class="table__label" aria-hidden="true"
-                    >Original book file:</span
-                  >
-                  <a href="#"
-                    ><box-icon type="solid" name="file-pdf"></box-icon
-                  ></a>
-                </td>
-                <td
-                  v-if="artistRole === true"
-                  class="table__cell text-nowrap"
-                  role="cell"
-                >
-                  <span class="table__label" aria-hidden="true">images:</span>
-
-
-<ul class="exp-gallery grid gap-xs js-exp-gallery" data-controls="expLightbox" data-placeholder="../../../app/assets/img/expandable-img-gallery-placeholder.svg">
-  <li class="js-exp-gallery__item">
-    <figure>
-      <img src="https://firebasestorage.googleapis.com/v0/b/backstage-aa43c.appspot.com/o/images%2F1.jpg?alt=media&token=885c8a47-5ba0-4edf-843c-b1b901f22c98" data-src="https://firebasestorage.googleapis.com/v0/b/backstage-aa43c.appspot.com/o/images%2F1.jpg?alt=media&token=885c8a47-5ba0-4edf-843c-b1b901f22c98" alt="Image Description">
-
-    </figure>
-  </li>
-
-  <li class="js-exp-gallery__item">
-    <figure>
-      <img src="https://firebasestorage.googleapis.com/v0/b/backstage-aa43c.appspot.com/o/images%2F2.jpg?alt=media&token=eb74309f-d945-412f-a9c1-24fbbe898c77" data-src="https://firebasestorage.googleapis.com/v0/b/backstage-aa43c.appspot.com/o/images%2F2.jpg?alt=media&token=eb74309f-d945-412f-a9c1-24fbbe898c77" alt="Image Description">
-  
-    </figure>
-  </li>
-
-  <li class="js-exp-gallery__item">
-    <figure>
-      <img src="https://firebasestorage.googleapis.com/v0/b/backstage-aa43c.appspot.com/o/images%2F3.jpg?alt=media&token=06a95e15-35b0-473d-80ea-7037098e6ba4" data-src="https://firebasestorage.googleapis.com/v0/b/backstage-aa43c.appspot.com/o/images%2F3.jpg?alt=media&token=06a95e15-35b0-473d-80ea-7037098e6ba4" alt="Image Description">
-    </figure>
-  </li>
-</ul>
-                </td>
-
-                <td
-                  class="table__cell upload-file"
-                  role="cell"
-                  :class="{ active: order.uploadedPDFWork }"
-                >
-                  <span class="table__label" aria-hidden="true"
-                    >Upload work (PDF):</span
-                  >
-
-                  <fieldset
-                    class="file-upload"
-                    v-if="
-                      artistRole === true && order.uploadedPDFWork === false
-                    "
-                  >
-                    <label
-                      for="upload1"
-                      class="file-upload__label btn btn--subtle"
-                    >
-                      <span
-                        class="file-upload__text file-upload__text--has-max-width"
-                        >Upload a file</span
-                      >
-                    </label>
-
-                    <input
-                      :data-key="order.key"
-                      type="file"
-                      class="file-upload__input"
-                      name="upload1"
-                      id="upload1"
-                      @change="onFileSelected"
-                    />
-                    <progress
-                      ref="fileUpload"
-                      class="uploader-file"
-                      :value="uploadProgress"
-                      max="100"
-                      >0%</progress
-                    >
-                  </fieldset>
-                  <div v-else class="flex items-center pdftoprint">
-                    <a :href="order.printbookurl" target="_blank"
-                      ><box-icon type="solid" name="file-pdf"></box-icon
-                    ></a>
-                    <a
-                      v-if="artistRole === true"
-                      @click.prevent="openDielogDelete"
-                      :aria-controls="order.key"
-                      class="margin-left-xs btn-pdftoprint"
-                      >Delete</a
-                    >
-                    <div
-                      v-if="artistRole === true"
-                      :id="order.key"
-                      class="dialog js-dialog"
-                      data-animation="on"
-                    >
-                      <div
-                        class="dialog__content max-width-xxs"
-                        role="alertdialog"
-                        aria-labelledby="dialogTitle1"
-                        aria-describedby="dialogDescription1"
-                      >
-                        <div class="text-component">
-                          <h4 id="dialogTitle1">
-                            Are you sure you want to permanently delete this
-                            file?
-                          </h4>
-                          <p id="dialogDescription1">
-                            This action cannot be undone.
-                          </p>
-                        </div>
-
-                        <footer class="margin-top-md">
-                          <div class="flex justify-end gap-xs flex-wrap">
-                            <button class="btn btn--subtle js-dialog__close">
-                              Cancel
-                            </button>
-                            <button
-                              class="btn btn--accent"
-                              @click.prevent="confirmDeletePDF(order.key)"
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </footer>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td
-                  v-if="printerRole === true"
-                  class="table__cell text-nowrap"
-                  role="cell"
-                >
-                  <span class="table__label" aria-hidden="true">Finished:</span>
-                  {{ order.finished }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <!--Galery--->
-          <div id="expLightbox" class="modal exp-lightbox bg js-modal js-exp-lightbox" data-animation="on" data-modal-first-focus=".js-exp-lightbox__body">
-  <div class="exp-lightbox__content">
-    <header class="exp-lightbox__header">
-      <h1 class="exp-lightbox__title">Lightbox</h1>
-
-      <menu class="menu-bar menu-bar--expanded@md js-menu-bar" data-menu-class="menu--overlay">
-        <li class="menu-bar__item menu-bar__item--trigger js-menu-bar__trigger" role="menuitem" aria-label="More options">
-          <svg class="icon menu-bar__icon" aria-hidden="true" viewBox="0 0 16 16"><circle cx="8" cy="7.5" r="1.5" /><circle cx="1.5" cy="7.5" r="1.5" /><circle cx="14.5" cy="7.5" r="1.5" /></svg>
-        </li>
+          <th class="int-table__cell int-table__cell--th int-table__cell--sort js-int-table__cell--sort">
+            <div class="flex items-center">
+              <span>ID</span>
       
-        <li class="menu-bar__item menu-bar__item--hide" role="menuitem">
-          <svg class="icon menu-bar__icon" aria-hidden="true" viewBox="0 0 24 24"><g stroke-linecap="square" stroke-linejoin="miter" stroke-miterlimit="10" stroke-width="2" stroke="currentColor" fill="none"><path d="M22,11l-8-8v5 C8.4,8,1,10.2,1,20c2.7-4.6,5.5-6,13-6v5L22,11z"></path></g></svg>
-          <span class="menu-bar__label">Share</span>
-        </li>
-      
-        <li class="menu-bar__item menu-bar__item--hide" role="menuitem">
-          <svg class="icon menu-bar__icon" aria-hidden="true" viewBox="0 0 24 24"><g stroke-linecap="square" stroke-linejoin="miter" stroke-miterlimit="10" stroke-width="2" stroke="currentColor" fill="none"><line x1="12" y1="16" x2="12" y2="3" stroke-linecap="butt"></line><polyline points="17,3 23,3 23,21 1,21 1,3 7,3 "></polyline><polyline points=" 17,11 12,16 7,11 "></polyline></g></svg>
-          <span class="menu-bar__label">Download</span>
-        </li>
-      
-        <li class="menu-bar__item js-modal__close" role="menuitem">
-          <svg class="icon menu-bar__icon" aria-hidden="true" viewBox="0 0 24 24"><g stroke-linecap="square" stroke-linejoin="miter" stroke-miterlimit="10" stroke-width="2" stroke="currentColor" fill="none"><line x1="19" y1="5" x2="5" y2="19"></line><line x1="19" y1="19" x2="5" y2="5"></line></g></svg>
-          <span class="menu-bar__label reset">Close</span>
-        </li>
-      </menu>
-    </header>
+              <svg class="icon icon--xxs margin-left-xxxs int-table__sort-icon" aria-hidden="true" viewBox="0 0 12 12"><polygon class="arrow-up" points="6 0 10 5 2 5 6 0"/><polygon class="arrow-down" points="6 12 2 7 10 7 6 12"/></svg>
+            </div>
 
-    <div class="exp-lightbox__body slideshow slideshow--transition-slide js-exp-lightbox__body" data-swipe="on" data-navigation="off" data-zoom="on">
-      <ul class="slideshow__content js-exp-lightbox__slideshow">
-        <!-- gallery created in JS -->
-      </ul>
+            <ul class="sr-only js-int-table__sort-list">
+              <li>
+                <input type="radio" name="sortingId" id="sortingIdNone" value="none" checked>
+                <label for="sortingIdNone">No sorting</label>
+              </li>
 
-      <ul>
-        <li class="slideshow__control js-slideshow__control">
-          <button class="reset slideshow__btn js-tab-focus">
-            <svg class="icon" viewBox="0 0 32 32"><title>Show previous slide</title><path d="M20.768,31.395L10.186,16.581c-0.248-0.348-0.248-0.814,0-1.162L20.768,0.605l1.627,1.162L12.229,16 l10.166,14.232L20.768,31.395z"></path></svg>
-          </button>
-        </li>
-    
-        <li class="slideshow__control js-slideshow__control">
-          <button class="reset slideshow__btn js-tab-focus">
-            <svg class="icon" viewBox="0 0 32 32"><title>Show next slide</title><path d="M11.232,31.395l-1.627-1.162L19.771,16L9.605,1.768l1.627-1.162l10.582,14.813 c0.248,0.348,0.248,0.814,0,1.162L11.232,31.395z"></path></svg>
-          </button>
-        </li>
-      </ul>
-    </div>
+              <li>
+                <input type="radio" name="sortingId" id="sortingIdAsc" value="asc">
+                <label for="sortingIdAsc">Sort in ascending order</label>
+              </li>
+      
+              <li>
+                <input type="radio" name="sortingId" id="sortingIdDes" value="desc">
+                <label for="sortingIdDes">Sort in descending order</label>
+              </li>
+            </ul>
+          </th>
+
+          <th class="int-table__cell int-table__cell--th int-table__cell--sort js-int-table__cell--sort">
+            <div class="flex items-center">
+              <span>Name</span>
+      
+              <svg class="icon icon--xxs margin-left-xxxs int-table__sort-icon" aria-hidden="true" viewBox="0 0 12 12"><polygon class="arrow-up" points="6 0 10 5 2 5 6 0"/><polygon class="arrow-down" points="6 12 2 7 10 7 6 12"/></svg>
+            </div>
+
+            <ul class="sr-only js-int-table__sort-list">
+              <li>
+                <input type="radio" name="sortingName" id="sortingNameNone" value="none" checked>
+                <label for="sortingNameNone">No sorting</label>
+              </li>
+
+              <li>
+                <input type="radio" name="sortingName" id="sortingNameAsc" value="asc">
+                <label for="sortingNameAsc">Sort in ascending order</label>
+              </li>
+      
+              <li>
+                <input type="radio" name="sortingName" id="sortingNameDes" value="desc">
+                <label for="sortingNameDes">Sort in descending order</label>
+              </li>
+            </ul>
+          </th>
+
+          <th class="int-table__cell int-table__cell--th int-table__cell--sort js-int-table__cell--sort">
+            <div class="flex items-center">
+              <span>Email</span>
+      
+              <svg class="icon icon--xxs margin-left-xxxs int-table__sort-icon" aria-hidden="true" viewBox="0 0 12 12"><polygon class="arrow-up" points="6 0 10 5 2 5 6 0"/><polygon class="arrow-down" points="6 12 2 7 10 7 6 12"/></svg>
+            </div>
+
+            <ul class="sr-only js-int-table__sort-list">
+              <li>
+                <input type="radio" name="sortingEmail" id="sortingEmailNone" value="none" checked>
+                <label for="sortingEmailNone">No sorting</label>
+              </li>
+
+              <li>
+                <input type="radio" name="sortingEmail" id="sortingEmailAsc" value="asc">
+                <label for="sortingEmailAsc">Sort in ascending order</label>
+              </li>
+      
+              <li>
+                <input type="radio" name="sortingEmail" id="sortingEmailDes" value="desc">
+                <label for="sortingEmailDes">Sort in descending order</label>
+              </li>
+            </ul>
+          </th>
+
+          <th class="int-table__cell int-table__cell--th text-left">
+            Description
+          </th>
+
+          <th class="int-table__cell int-table__cell--th int-table__cell--sort js-int-table__cell--sort" data-date-format="dd-mm-yyyy">
+            <div class="flex items-center">
+              <span>Date</span>
+      
+              <svg class="icon icon--xxs margin-left-xxxs int-table__sort-icon" aria-hidden="true" viewBox="0 0 12 12"><polygon class="arrow-up" points="6 0 10 5 2 5 6 0"/><polygon class="arrow-down" points="6 12 2 7 10 7 6 12"/></svg>
+            </div>
+
+            <ul class="sr-only js-int-table__sort-list">
+              <li>
+                <input type="radio" name="sortingDate" id="sortingDateNone" value="none" checked>
+                <label for="sortingDateNone">No sorting</label>
+              </li>
+
+              <li>
+                <input type="radio" name="sortingDate" id="sortingDateAsc" value="asc">
+                <label for="sortingDateAsc">Sort in ascending order</label>
+              </li>
+      
+              <li>
+                <input type="radio" name="sortingDate" id="sortingDateDes" value="desc">
+                <label for="sortingDateDes">Sort in descending order</label>
+              </li>
+            </ul>
+          </th>
+
+          <th class="int-table__cell int-table__cell--th text-left">Location</th>
+          <th class="int-table__cell int-table__cell--th text-right">Action</th>
+        </tr>
+      </thead>
+      
+      <tbody class="int-table__body js-int-table__body">
+        <tr class="int-table__row">
+          <th class="int-table__cell" scope="row">
+            <div class="custom-checkbox int-table__checkbox">
+              <input class="custom-checkbox__input js-int-table__select-row" type="checkbox" aria-label="Select this row"/>
+              <div class="custom-checkbox__control" aria-hidden="true"></div>
+            </div>
+          </th>
+          <td class="int-table__cell">1</td>
+          <td class="int-table__cell"><a href="#0">Bryony Mcmillan</a></td>
+          <td class="int-table__cell">r.email@email.com</td>
+          <td class="int-table__cell max-width-xxxxs">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat eveniet nisi itaque!</td>
+          <td class="int-table__cell">01/01/2021</td>
+          <td class="int-table__cell">Hungary</td>
+          <td class="int-table__cell">
+            <button class="reset int-table__menu-btn margin-left-auto js-tab-focus" data-label="Edit row" aria-controls="menu-example">
+              <svg class="icon" viewBox="0 0 16 16"><circle cx="8" cy="7.5" r="1.5" /><circle cx="1.5" cy="7.5" r="1.5" /><circle cx="14.5" cy="7.5" r="1.5" /></svg>
+            </button>
+          </td>
+        </tr>
+
+        <tr class="int-table__row">
+          <th class="int-table__cell" scope="row">
+            <div class="custom-checkbox int-table__checkbox">
+              <input class="custom-checkbox__input js-int-table__select-row" type="checkbox" aria-label="Select this row"/>
+              <div class="custom-checkbox__control" aria-hidden="true"></div>
+            </div>
+          </th>
+          <td class="int-table__cell">2</td>
+          <td class="int-table__cell"><a href="#0">Hetty Maxwell</a></td>
+          <td class="int-table__cell">f.email@email.com</td>
+          <td class="int-table__cell max-width-xxxxs">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat eveniet nisi itaque!</td>
+          <td class="int-table__cell">11/10/2020</td>
+          <td class="int-table__cell">United Kingdom</td>
+          <td class="int-table__cell">
+            <button class="reset int-table__menu-btn margin-left-auto js-tab-focus" data-label="Edit row" aria-controls="menu-example">
+              <svg class="icon" viewBox="0 0 16 16"><circle cx="8" cy="7.5" r="1.5" /><circle cx="1.5" cy="7.5" r="1.5" /><circle cx="14.5" cy="7.5" r="1.5" /></svg>
+            </button>
+          </td>
+        </tr>
+
+        <tr class="int-table__row">
+          <th class="int-table__cell" scope="row">
+            <div class="custom-checkbox int-table__checkbox">
+              <input class="custom-checkbox__input js-int-table__select-row" type="checkbox" aria-label="Select this row"/>
+              <div class="custom-checkbox__control" aria-hidden="true"></div>
+            </div>
+          </th>
+          <td class="int-table__cell">3</td>
+          <td class="int-table__cell"><a href="#0">Honey Leblanc</a></td>
+          <td class="int-table__cell">v.email@email.com</td>
+          <td class="int-table__cell max-width-xxxxs">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat eveniet nisi itaque!</td>
+          <td class="int-table__cell">17/09/2020</td>
+          <td class="int-table__cell">Maldives</td>
+          <td class="int-table__cell">
+            <button class="reset int-table__menu-btn margin-left-auto js-tab-focus" data-label="Edit row" aria-controls="menu-example">
+              <svg class="icon" viewBox="0 0 16 16"><circle cx="8" cy="7.5" r="1.5" /><circle cx="1.5" cy="7.5" r="1.5" /><circle cx="14.5" cy="7.5" r="1.5" /></svg>
+            </button>
+          </td>
+        </tr>
+
+        <tr class="int-table__row">
+          <th class="int-table__cell" scope="row">
+            <div class="custom-checkbox int-table__checkbox">
+              <input class="custom-checkbox__input js-int-table__select-row" type="checkbox" aria-label="Select this row"/>
+              <div class="custom-checkbox__control" aria-hidden="true"></div>
+            </div>
+          </th>
+          <td class="int-table__cell">4</td>
+          <td class="int-table__cell"><a href="#0">Maira Hodges</a></td>
+          <td class="int-table__cell">a.email@email.com</td>
+          <td class="int-table__cell max-width-xxxxs">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat eveniet nisi itaque!</td>
+          <td class="int-table__cell">04/08/2020</td>
+          <td class="int-table__cell">Iceland</td>
+          <td class="int-table__cell">
+            <button class="reset int-table__menu-btn margin-left-auto js-tab-focus" data-label="Edit row" aria-controls="menu-example">
+              <svg class="icon" viewBox="0 0 16 16"><circle cx="8" cy="7.5" r="1.5" /><circle cx="1.5" cy="7.5" r="1.5" /><circle cx="14.5" cy="7.5" r="1.5" /></svg>
+            </button>
+          </td>
+        </tr>
+
+        <tr class="int-table__row">
+          <th class="int-table__cell" scope="row">
+            <div class="custom-checkbox int-table__checkbox">
+              <input class="custom-checkbox__input js-int-table__select-row" type="checkbox" aria-label="Select this row"/>
+              <div class="custom-checkbox__control" aria-hidden="true"></div>
+            </div>
+          </th>
+          <td class="int-table__cell">5</td>
+          <td class="int-table__cell"><a href="#0">Nigel Lang</a></td>
+          <td class="int-table__cell">g.email@email.com</td>
+          <td class="int-table__cell max-width-xxxxs">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat eveniet nisi itaque!</td>
+          <td class="int-table__cell">03/07/2020</td>
+          <td class="int-table__cell">Italy</td>
+          <td class="int-table__cell">
+            <button class="reset int-table__menu-btn margin-left-auto js-tab-focus" data-label="Edit row" aria-controls="menu-example">
+              <svg class="icon" viewBox="0 0 16 16"><circle cx="8" cy="7.5" r="1.5" /><circle cx="1.5" cy="7.5" r="1.5" /><circle cx="14.5" cy="7.5" r="1.5" /></svg>
+            </button>
+          </td>
+        </tr>
+
+        <tr class="int-table__row">
+          <th class="int-table__cell" scope="row">
+            <div class="custom-checkbox int-table__checkbox">
+              <input class="custom-checkbox__input js-int-table__select-row" type="checkbox" aria-label="Select this row"/>
+              <div class="custom-checkbox__control" aria-hidden="true"></div>
+            </div>
+          </th>
+          <td class="int-table__cell">6</td>
+          <td class="int-table__cell"><a href="#0">Saif Acevedo</a></td>
+          <td class="int-table__cell">l.email@email.com</td>
+          <td class="int-table__cell max-width-xxxxs">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat eveniet nisi itaque!</td>
+          <td class="int-table__cell">21/05/2020</td>
+          <td class="int-table__cell">Argentina</td>
+          <td class="int-table__cell">
+            <button class="reset int-table__menu-btn margin-left-auto js-tab-focus" data-label="Edit row" aria-controls="menu-example">
+              <svg class="icon" viewBox="0 0 16 16"><circle cx="8" cy="7.5" r="1.5" /><circle cx="1.5" cy="7.5" r="1.5" /><circle cx="14.5" cy="7.5" r="1.5" /></svg>
+            </button>
+          </td>
+        </tr>
+
+        <tr class="int-table__row">
+          <th class="int-table__cell" scope="row">
+            <div class="custom-checkbox int-table__checkbox">
+              <input class="custom-checkbox__input js-int-table__select-row" type="checkbox" aria-label="Select this row"/>
+              <div class="custom-checkbox__control" aria-hidden="true"></div>
+            </div>
+          </th>
+          <td class="int-table__cell">7</td>
+          <td class="int-table__cell"><a href="#0">Isaak O'Gallagher</a></td>
+          <td class="int-table__cell">b.email@email.com</td>
+          <td class="int-table__cell max-width-xxxxs">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat eveniet nisi itaque!</td>
+          <td class="int-table__cell">11/04/2020</td>
+          <td class="int-table__cell">Maldives</td>
+          <td class="int-table__cell">
+            <button class="reset int-table__menu-btn margin-left-auto js-tab-focus" data-label="Edit row" aria-controls="menu-example">
+              <svg class="icon" viewBox="0 0 16 16"><circle cx="8" cy="7.5" r="1.5" /><circle cx="1.5" cy="7.5" r="1.5" /><circle cx="14.5" cy="7.5" r="1.5" /></svg>
+            </button>
+          </td>
+        </tr>
+
+        <tr class="int-table__row">
+          <th class="int-table__cell" scope="row">
+            <div class="custom-checkbox int-table__checkbox">
+              <input class="custom-checkbox__input js-int-table__select-row" type="checkbox" aria-label="Select this row"/>
+              <div class="custom-checkbox__control" aria-hidden="true"></div>
+            </div>
+          </th>
+          <td class="int-table__cell">8</td>
+          <td class="int-table__cell"><a href="#0">Lucille Arias</a></td>
+          <td class="int-table__cell">m.email@email.com</td>
+          <td class="int-table__cell max-width-xxxxs">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat eveniet nisi itaque!</td>
+          <td class="int-table__cell">05/03/2020</td>
+          <td class="int-table__cell">Thailand</td>
+          <td class="int-table__cell">
+            <button class="reset int-table__menu-btn margin-left-auto js-tab-focus" data-label="Edit row" aria-controls="menu-example">
+              <svg class="icon" viewBox="0 0 16 16"><circle cx="8" cy="7.5" r="1.5" /><circle cx="1.5" cy="7.5" r="1.5" /><circle cx="14.5" cy="7.5" r="1.5" /></svg>
+            </button>
+          </td>
+        </tr>
+
+        <tr class="int-table__row">
+          <th class="int-table__cell" scope="row">
+            <div class="custom-checkbox int-table__checkbox">
+              <input class="custom-checkbox__input js-int-table__select-row" type="checkbox" aria-label="Select this row"/>
+              <div class="custom-checkbox__control" aria-hidden="true"></div>
+            </div>
+          </th>
+          <td class="int-table__cell">9</td>
+          <td class="int-table__cell"><a href="#0">Kendall Rankin</a></td>
+          <td class="int-table__cell">e.email@email.com</td>
+          <td class="int-table__cell max-width-xxxxs">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat eveniet nisi itaque!</td>
+          <td class="int-table__cell">02/02/2020</td>
+          <td class="int-table__cell">Austria</td>
+          <td class="int-table__cell">
+            <button class="reset int-table__menu-btn margin-left-auto js-tab-focus" data-label="Edit row" aria-controls="menu-example">
+              <svg class="icon" viewBox="0 0 16 16"><circle cx="8" cy="7.5" r="1.5" /><circle cx="1.5" cy="7.5" r="1.5" /><circle cx="14.5" cy="7.5" r="1.5" /></svg>
+            </button>
+          </td>
+        </tr>
+
+        <tr class="int-table__row">
+          <th class="int-table__cell" scope="row">
+            <div class="custom-checkbox int-table__checkbox">
+              <input class="custom-checkbox__input js-int-table__select-row" type="checkbox" aria-label="Select this row"/>
+              <div class="custom-checkbox__control" aria-hidden="true"></div>
+            </div>
+          </th>
+          <td class="int-table__cell">10</td>
+          <td class="int-table__cell"><a href="#0">Raihan Boone</a></td>
+          <td class="int-table__cell">c.email@email.com</td>
+          <td class="int-table__cell max-width-xxxxs">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat eveniet nisi itaque!</td>
+          <td class="int-table__cell">01/01/2020</td>
+          <td class="int-table__cell">USA</td>
+          <td class="int-table__cell">
+            <button class="reset int-table__menu-btn margin-left-auto js-tab-focus" data-label="Edit row" aria-controls="menu-example">
+              <svg class="icon" viewBox="0 0 16 16"><circle cx="8" cy="7.5" r="1.5" /><circle cx="1.5" cy="7.5" r="1.5" /><circle cx="14.5" cy="7.5" r="1.5" /></svg>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
-        </div>
-      </div>
-    </div>
+
+<menu id="menu-example" class="menu js-menu">
+  <li role="menuitem">
+    <span class="menu__content js-menu__content">
+      <svg class="icon menu__icon" aria-hidden="true" viewBox="0 0 12 12"><path d="M10.121.293a1,1,0,0,0-1.414,0L1,8,0,12l4-1,7.707-7.707a1,1,0,0,0,0-1.414Z"></path></svg>
+      <span>Edit</span>
+    </span>
+  </li>
+
+  <li role="menuitem">
+    <span class="menu__content js-menu__content">
+      <svg class="icon menu__icon" aria-hidden="true" viewBox="0 0 16 16"><path d="M15,4H1C0.4,4,0,4.4,0,5v10c0,0.6,0.4,1,1,1h14c0.6,0,1-0.4,1-1V5C16,4.4,15.6,4,15,4z M14,14H2V6h12V14z"></path><rect x="2" width="12" height="2"></rect></svg>
+      <span>Copy</span>
+    </span>
+  </li>
+
+  <li role="menuitem">
+    <span class="menu__content js-menu__content">
+      <svg class="icon menu__icon" aria-hidden="true" viewBox="0 0 12 12"><path d="M8.354,3.646a.5.5,0,0,0-.708,0L6,5.293,4.354,3.646a.5.5,0,0,0-.708.708L5.293,6,3.646,7.646a.5.5,0,0,0,.708.708L6,6.707,7.646,8.354a.5.5,0,1,0,.708-.708L6.707,6,8.354,4.354A.5.5,0,0,0,8.354,3.646Z"></path><path d="M6,0a6,6,0,1,0,6,6A6.006,6.006,0,0,0,6,0ZM6,10a4,4,0,1,1,4-4A4,4,0,0,1,6,10Z"></path></svg>
+      <span>Delete</span>
+    </span>
+  </li>
+</menu>
   </div>
 </template>
 
 <script>
 import navbar from "./Navbar";
 import { mapGetters } from "vuex";
-import './../assets/js/table.js'
-import {MyFunctions} from "../assets//js/table.js";
 import firebase from "firebase";
 import { db, storage } from "../main";
 export default {
@@ -462,14 +419,11 @@ export default {
     });
   },
   mounted() {
-
+    let codyFrameworkTable = document.createElement('script')
+    codyFrameworkTable.setAttribute('src', '/js/table.js')
+    document.head.appendChild(codyFrameworkTable)
   },
-
-   destroyed() { // remove the JS code once the component has been destroyed
-
-   
-    },
-
+   destroyed() {},
   methods: {
     onFileSelected(event) {
       //get file

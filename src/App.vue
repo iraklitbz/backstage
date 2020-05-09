@@ -82,8 +82,7 @@ export default {
     // map `this.user` to `this.$store.getters.user`
     ...mapGetters({
       user: "user",
-    }),
-    
+    })
   },
   components: {
     navbar,
@@ -93,9 +92,7 @@ export default {
      this.$router.push("/dashboard")
      }
   },
-
   methods: {
-  
     submit() {
       firebase
         .auth()
@@ -106,8 +103,13 @@ export default {
         .catch((err) => {
           this.error = err.message;
         });
-    },
+    }
   },
+  mounted () {
+    let codyFramework = document.createElement('script')
+    codyFramework.setAttribute('src', 'https://unpkg.com/codyhouse-framework/main/assets/js/util.js')
+    document.head.appendChild(codyFramework)
+  }
 };
 </script>
 <style lang="scss">
