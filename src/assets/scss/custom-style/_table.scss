@@ -78,7 +78,7 @@ Usage: codyhouse.co/license
     .table__body {
         .table__row {
             &:nth-child(odd) {
-                background-color: var(--color-contrast-lower);
+                background-color: #fff;
             }
         }
     }

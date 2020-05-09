@@ -1,10 +1,7 @@
 <template>
   <div>
     <div>
-      <router-link to="/" class="navbar-brand">Backstage</router-link>
-      <div v-if="user.loggedIn" class="user-panel">
-        <a class="nav-link" @click.prevent="signOut">Sign out</a>
-      </div>
+     
       
       <template v-if="user.loggedIn">
         <!--<div class="nav-item">{{user.data.displayName}}</div>
@@ -86,25 +83,19 @@ export default {
     ...mapGetters({
       user: "user",
     }),
+    
   },
   components: {
     navbar,
   },
+  created() {
+   if(this.user.loggedIn) {
+     this.$router.push("/dashboard")
+     }
+  },
+
   methods: {
-    signOut() {
-      firebase
-        .auth()
-        .currentUser.getIdTokenResult()
-                    .then(tokenResult => {
-                        console.log(tokenResult.claims);
-                    })
-        .signOut()
-        .then(() => {
-          this.$router.replace({
-            name: "home",
-          });
-        });
-    },
+  
     submit() {
       firebase
         .auth()

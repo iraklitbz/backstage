@@ -75,30 +75,33 @@
 
 <script>
 import firebase from "firebase";
-import { db } from "../main";
+
 export default {
-   
   data() {
     return {
       form: {
-        name: "irakli",
-        email: "ika@gmail.com",
-        password: ""
+        name: "",
+        email: "",
+        password: "",
+        role: "loquesea"
       },
       error: null
     };
   },
   methods: {
     async submit() {
-        const { user } = firebase.auth().createUserWithEmailAndPassword(this.form.email, this.form.password)
-        if (user) {
-            const result = await db.collection('userInfo').add({
-                uid: user.uid,
-                name: this.name,
-                surname: this.email
+      firebase
+        .auth().createUserWithEmailAndPassword(this.form.email, this.form.password)
+        .then(data => {
+          data.user
+            .updateProfile({
+              displayName: this.form.name
             })
-    }
-      
+            .then(() => {});
+        })
+        .catch(err => {
+          this.error = err.message;
+        });
     }
   }
 };
