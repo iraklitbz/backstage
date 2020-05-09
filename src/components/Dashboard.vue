@@ -141,6 +141,7 @@
               </td>
               <td class="table__cell text-nowrap" role="cell">
                 <span class="table__label" aria-hidden="true">images:</span>
+                <gallery :images='order.img' ></gallery>
               </td>
 
               <td
@@ -209,21 +210,7 @@
                       </footer>
                     </div>
                   </div>
-
-
-
                 </div>
-
-
-
-
-
-
-
-
-
-
-
               </td>
               <td class="table__cell text-nowrap" role="cell">
                 <span class="table__label" aria-hidden="true">Finished:</span>
@@ -239,8 +226,10 @@
 
 <script>
 import navbar from "./Navbar";
+import gallery from "./Gallery";
 import { mapGetters } from "vuex";
 import { tablePersonal } from "./../assets/js/table";
+
  import { dialogJS } from './../assets/js/dialogJS';
 import firebase from "firebase";
 import { db, storage } from "../main";
@@ -253,12 +242,14 @@ export default {
   },
   components: {
     navbar,
+    gallery
   },
   data() {
     return {
       orderCollection: [],
       selectedFile: null,
       uploadProgress: 0,
+
     };
   },
   created() {
