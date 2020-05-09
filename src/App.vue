@@ -84,6 +84,11 @@ export default {
       user: "user",
     }),
   },
+  created() {
+   if(this.user.loggedIn) {
+     this.$router.push("/dashboard")
+     }
+  },
   components: {
     navbar,
   },

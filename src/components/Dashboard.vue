@@ -15,17 +15,16 @@
               <th class="table__cell text-left" scope="col">Product</th>
               <th class="table__cell text-left" scope="col">Date</th>
               <th class="table__cell text-left" scope="col">Action</th>
-              <th class="table__cell text-left" scope="col">Draw status</th>
-              <th class="table__cell text-left" scope="col">Print status</th>
-              <th class="table__cell text-left" scope="col">
-                Original book file
-              </th>
-              <th class="table__cell text-left" scope="col">Images</th>
+              <th v-if="artistRole === true" class="table__cell text-left" scope="col"> Draw start </th>
+              <th v-if="artistRole === true" class="table__cell text-left" scope="col">Draw finish </th>
+              <th v-if="printerRole === true" class="table__cell text-left" scope="col">Print status</th>
 
+              <th v-if="artistRole === true" class="table__cell text-left" scope="col"> Original book file</th>
+              <th v-if="artistRole === true" class="table__cell text-left" scope="col">Images</th>
               <th class="table__cell text-left" scope="col">
                 Upload work (PDF)
               </th>
-              <th class="table__cell text-left" scope="col">Finished</th>
+              <th v-if="printerRole === true" class="table__cell text-left" scope="col">Finished</th>
             </tr>
           </thead>
 
@@ -104,42 +103,64 @@
                   </ul>
                 </nav>
               </td>
-              <td class="table__cell text-nowrap" role="cell">
-                <span class="table__label" aria-hidden="true"
-                  >Draw status:</span
+               <td v-if="artistRole === true" class="table__cell text-nowrap" role="cell">
+                  <span class="table__label" aria-hidden="true">Draw start:</span>
+                  <label class="switch">
+                    <input type="checkbox" />
+                    <span
+                      class="slider round"
+                      :class="{ checked: artist.drawStart }"
+                      @click.prevent="drawIsStart(order.key, user.data.email)"
+                    ></span>
+                  </label>
+                </td>
+                 <td
+                  v-if="artistRole === true"
+                  class="table__cell text-nowrap"
+                  role="cell"
                 >
-                <label class="switch">
-                  <input type="checkbox" />
-                  <span
-                    class="slider round"
-                    :class="{ checked: order.drawdone }"
-                    @click.prevent="checkDrawStatus(order.key)"
-                  ></span>
-                </label>
-              </td>
-              <td class="table__cell text-nowrap" role="cell">
-                <span class="table__label" aria-hidden="true"
-                  >Print status:</span
+                  <span class="table__label" aria-hidden="true"
+                    >Draw finish:</span
+                  >
+                  <label class="switch">
+                    <input type="checkbox" />
+                    <span
+                      class="slider round"
+                      :class="{ checked: artist.drawFinish }"
+                      @click.prevent="drawIsFinish(order.key)"
+                    ></span>
+                  </label>
+                </td>
+              <td
+                  v-if="printerRole === true"
+                  class="table__cell text-nowrap"
+                  role="cell"
                 >
-                <label class="switch">
-                  <input type="checkbox" />
-                  <span
-                    class="slider round"
-                    :class="{ checked: order.printdone }"
-                    @click.prevent="printStatus(order.key)"
-                  ></span>
-                </label>
-              </td>
+                  <span class="table__label" aria-hidden="true"
+                    >Print status:</span
+                  >
+                  <label class="switch">
+                    <input type="checkbox" />
+                    <span
+                      class="slider round"
+                      :class="{ checked: order.printdone }"
+                      @click.prevent="printStatus(order.key)"
+                    ></span>
+                  </label>
+                </td>
 
-              <td class="table__cell text-nowrap" role="cell">
-                <span class="table__label" aria-hidden="true"
-                  >Original book file:</span
+             <td v-if="artistRole === true"
+                  class="table__cell text-nowrap"
+                  role="cell"
                 >
-                <a href="#"
-                  ><box-icon type="solid" name="file-pdf"></box-icon
-                ></a>
-              </td>
-              <td class="table__cell text-nowrap" role="cell">
+                  <span class="table__label" aria-hidden="true"
+                    >Original book file:</span
+                  >
+                  <a href="#"
+                    ><box-icon type="solid" name="file-pdf"></box-icon
+                  ></a>
+                </td>
+              <td  v-if="artistRole === true" class="table__cell text-nowrap" role="cell">
                 <span class="table__label" aria-hidden="true">images:</span>
                 <gallery :images='order.img' ></gallery>
               </td>
@@ -154,68 +175,95 @@
                 >
 
                 <fieldset
-                  class="file-upload"
-                  v-if="order.uploadedPDFWork === false"
-                >
-                  <label
-                    for="upload1"
-                    class="file-upload__label btn btn--subtle"
+                    class="file-upload"
+                    v-if="
+                      artistRole === true && order.uploadedPDFWork === false
+                    "
                   >
-                    <span
-                      class="file-upload__text file-upload__text--has-max-width"
-                      >Upload a file</span
+                    <label
+                      for="upload1"
+                      class="file-upload__label btn btn--subtle"
                     >
-                  </label>
+                      <span
+                        class="file-upload__text file-upload__text--has-max-width"
+                        >Upload a file</span
+                      >
+                    </label>
 
-                  <input
-                    :data-key="order.key"
-                    type="file"
-                    class="file-upload__input"
-                    name="upload1"
-                    id="upload1"
-                    @change="onFileSelected"
-                  />
-                  <progress
-                    ref="fileUpload"
-                    class="uploader-file"
-                    :value="uploadProgress"
-                    max="100"
-                    >0%</progress
-                  >
-                </fieldset>
+                    <input
+                      :data-key="order.key"
+                      type="file"
+                      class="file-upload__input"
+                      name="upload1"
+                      id="upload1"
+                      @change="onFileSelected"
+                    />
+                    <progress
+                      ref="fileUpload"
+                      class="uploader-file"
+                      :value="uploadProgress"
+                      max="100"
+                      >0%</progress
+                    >
+                  </fieldset>
                 <div v-else class="flex items-center pdftoprint">
-                  <a :href="order.printbookurl" target="_blank"
-                    ><box-icon type="solid" name="file-pdf"></box-icon
-                  ></a>
-                  <a
-                    
-                    @click.prevent="openDialogDelete"
-                    :aria-controls="order.key"
-                    class="margin-left-xs btn-pdftoprint"
-                    >Delete</a
-                  >
-                 
-                  <div :id="order.key" class="dialog dialog--sticky js-dialog" data-animation="on">
-                    <div class="dialog__content max-width-xxs" role="alertdialog" aria-labelledby="dialogTitle1" aria-describedby="dialogDescription1">
-                      <div class="text-component">
-                        <h4 id="dialogTitle1">Are you sure you want to permanently delete this file?</h4>
-                        <p id="dialogDescription1">This action cannot be undone.</p>
-                      </div>
-
-                      <footer class="margin-top-md">
-                        <div class="flex justify-end gap-xs flex-wrap">
-                          <button class="btn btn--subtle js-dialog__close">Cancel</button>
-                          <button class="btn btn--accent"  @click.prevent="confirmDeletePDF(order.key)">Delete</button>
+                    <a :href="order.printbookurl" target="_blank"
+                      ><box-icon type="solid" name="file-pdf"></box-icon
+                    ></a>
+                    <a
+                      v-if="artistRole === true"
+                      @click.prevent="openDialogDelete"
+                      :aria-controls="order.key"
+                      class="margin-left-xs btn-pdftoprint"
+                      >Delete</a
+                    >
+                    <div
+                      v-if="artistRole === true"
+                      :id="order.key"
+                      class="dialog js-dialog"
+                      data-animation="on"
+                    >
+                      <div
+                        class="dialog__content max-width-xxs"
+                        role="alertdialog"
+                        aria-labelledby="dialogTitle1"
+                        aria-describedby="dialogDescription1"
+                      >
+                        <div class="text-component">
+                          <h4 id="dialogTitle1">
+                            Are you sure you want to permanently delete this
+                            file?
+                          </h4>
+                          <p id="dialogDescription1">
+                            This action cannot be undone.
+                          </p>
                         </div>
-                      </footer>
+
+                        <footer class="margin-top-md">
+                          <div class="flex justify-end gap-xs flex-wrap">
+                            <button class="btn btn--subtle js-dialog__close">
+                              Cancel
+                            </button>
+                            <button
+                              class="btn btn--accent"
+                              @click.prevent="confirmDeletePDF(order.key)"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </footer>
+                      </div>
                     </div>
                   </div>
-                </div>
               </td>
-              <td class="table__cell text-nowrap" role="cell">
-                <span class="table__label" aria-hidden="true">Finished:</span>
-                {{ order.finished }}
-              </td>
+               <td
+                  v-if="printerRole === true"
+                  class="table__cell text-nowrap"
+                  role="cell"
+                >
+                  <span class="table__label" aria-hidden="true">Finished:</span>
+                  {{ order.finished }}
+                </td>
             </tr>
           </tbody>
         </table>
@@ -229,8 +277,7 @@ import navbar from "./Navbar";
 import gallery from "./Gallery";
 import { mapGetters } from "vuex";
 import { tablePersonal } from "./../assets/js/table";
-
- import { dialogJS } from './../assets/js/dialogJS';
+import { dialogJS } from './../assets/js/dialogJS';
 import firebase from "firebase";
 import { db, storage } from "../main";
 export default {
@@ -249,6 +296,12 @@ export default {
       orderCollection: [],
       selectedFile: null,
       uploadProgress: 0,
+      artistRole: Boolean,
+      printerRole: Boolean,
+       artist: {
+        drawStart: false,
+        drawFinish: false,
+      },
 
     };
   },
@@ -268,41 +321,32 @@ export default {
           payed: doc.data().payed,
           product: doc.data().product,
           printbookurl: doc.data().printbookurl,
-          drawdone: doc.data().drawdone,
+          drawStart: doc.data().drawStart,
+          drawFinish: doc.data().drawFinish,
           printdone: doc.data().printdone,
           customerID: doc.data().customerID,
           uploadedPDFWork: doc.data().uploadedPDFWork,
           key: doc.id,
         });
+        this.artist.drawStart = doc.data().artist.drawStart,
+        this.artist.drawFinish = doc.data().artist.drawFinish
       });
+    });
+        firebase.auth().onAuthStateChanged((userAuth) => {
+      if (userAuth) {
+        firebase
+          .auth()
+          .currentUser.getIdTokenResult()
+          .then((tokenResult) => {
+            this.artistRole = tokenResult.claims.Artist;
+            this.printerRole = tokenResult.claims.Printer;
+          });
+      }
     });
   },
   mounted() {
-    
-    (function() {
-      function initSideNav(nav) {
-        nav.addEventListener("click", function(event) {
-          var btn = event.target.closest(".js-sidenav__sublist-control");
-          if (!btn) return;
-          var listItem = btn.parentElement,
-            bool = Util.hasClass(listItem, "sidenav__item--expanded");
-          btn.setAttribute("aria-expanded", !bool);
-          Util.toggleClass(listItem, "sidenav__item--expanded", !bool);
-        });
-      }
-
-      var sideNavs = document.getElementsByClassName("js-sidenav");
-      if (sideNavs.length > 0) {
-        for (var i = 0; i < sideNavs.length; i++) {
-          (function(i) {
-            initSideNav(sideNavs[i]);
-          })(i);
-        }
-      }
-    })();
-    /*main.js*/
-
     tablePersonal();
+
   },
 
   methods: {
@@ -351,6 +395,32 @@ export default {
           drawdone: this.orderCollection[0].drawdone,
         });
     },
+     drawIsStart(key, email) {
+      this.artist.drawStart = !this.artist.drawStart;
+      db.collection("order")
+        .doc(key)
+        .update({
+          artist: {
+            id: email,
+            drawStart: this.artist.drawStart,
+            drawFinish: false,
+          },
+        });
+    },
+    drawIsFinish(key) {
+      
+      if (this.artist.drawStart === true) {
+        this.artist.drawFinish = !this.artist.drawFinish;
+        db.collection("order")
+          .doc(key)
+          .update({
+            artist: {
+              drawStart: true,
+              drawFinish: this.artist.drawFinish,
+            },
+          });
+      }
+    },
     printStatus(key) {
       this.orderCollection[0].printdone = !this.orderCollection[0].printdone;
       db.collection("order")
@@ -360,7 +430,7 @@ export default {
         });
     },
     openDialogDelete() {
-       dialogJS()
+       dialogJS();
     },
     confirmDeletePDF(key) {
       var storageRef = storage.ref("toPrintBook/" + key);
