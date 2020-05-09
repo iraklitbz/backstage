@@ -1,10 +1,7 @@
 <template>
   <div>
     <div>
-      <router-link to="/" class="navbar-brand">Backstage</router-link>
-      <div v-if="user.loggedIn" class="user-panel">
-        <a class="nav-link" @click.prevent="signOut">Sign out</a>
-      </div>
+    
       
       <template v-if="user.loggedIn">
         <!--<div class="nav-item">{{user.data.displayName}}</div>
