@@ -138,7 +138,7 @@
                 </td>
               <td  v-if="artistRole === true" class="table__cell text-nowrap" role="cell">
                 <span class="table__label" aria-hidden="true">images:</span>
-                <gallery :images='order.img' ></gallery>
+                <gallery :images='order.img' :galleryId="order.key" />
               </td>
 
              

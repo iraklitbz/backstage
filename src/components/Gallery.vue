@@ -1,7 +1,7 @@
 
 <template>
 <div class="gallery">
-    <ul class="exp-gallery grid gap-xs js-exp-gallery" data-controls="expLightbox" data-placeholder="../../../app/assets/img/expandable-img-gallery-placeholder.svg">
+    <ul class="exp-gallery grid gap-xs js-exp-gallery" :data-controls="`expLightbox-${galleryId}`" data-placeholder="../../../app/assets/img/expandable-img-gallery-placeholder.svg">
   <li v-for="image in images" :key="image" class="col-6 col-4@sm js-exp-gallery__item">
     <figure>
       <img :src="image" :data-src="image" alt="Image">
@@ -12,7 +12,7 @@
  
 </ul>
 
-<div id="expLightbox" class="modal exp-lightbox bg js-modal js-exp-lightbox" data-animation="on" data-modal-first-focus=".js-exp-lightbox__body">
+<div :id="`expLightbox-${galleryId}`" class="modal exp-lightbox bg js-modal js-exp-lightbox" data-animation="on" data-modal-first-focus=".js-exp-lightbox__body">
   <div class="exp-lightbox__content">
     <header class="exp-lightbox__header">
       <h1 class="exp-lightbox__title">forget</h1>
@@ -68,9 +68,15 @@ import { galleryJS } from "./../assets/js/gallery";
 
 export default {
     name: 'gallery',
-    props: [
-      'images'
-    ],
+    props: {
+      images: {
+        type: Array
+      },
+      galleryId: {
+        type: Number,
+        default: 1
+      }
+    },
     data() {
         return {
 
