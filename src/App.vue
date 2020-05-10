@@ -1,17 +1,7 @@
 <template>
-  <div>
-    <div>
-    
-      
-      <template v-if="user.loggedIn">
-        <!--<div class="nav-item">{{user.data.displayName}}</div>
-            <li class="nav-item">
-              <a class="nav-link" @click.prevent="signOut">Sign out</a>
-            </li>-->
-        <main class="py-4">
-          <router-view></router-view>
-        </main>
-      </template>
+      <div class="general">
+      <navbar v-if='user.loggedIn' :listNumber='listNumber'></navbar>
+      <router-view v-if='user.loggedIn'></router-view>
       <template v-else>
         <div class="max-width-xs login-box">
         <form action="#" class="login-form" @submit.prevent="submit">
@@ -60,14 +50,14 @@
         </form>
         </div>
       </template>
-    </div>
-  </div>
+</div>
 </template>
 
 <script>
 import navbar from "./components/Navbar";
 import { mapGetters } from "vuex";
 import firebase from "firebase";
+import { db } from "./main";
 export default {
   data() {
     return {
@@ -75,6 +65,8 @@ export default {
         email: "",
         password: "",
       },
+      listNumber: 0,
+      listNumberWorkingArtist: 0,
       error: null,
     };
   },
@@ -84,22 +76,26 @@ export default {
       user: "user",
     }),
   },
-  created() {
-   if(this.user.loggedIn) {
-     this.$router.push("/dashboard")
-     }
-  },
   components: {
     navbar,
+  },
+  created(){
+
+     var ref = db.collection('order');
+    ref.get().then(snap => {
+        this.listNumber = snap.size // will return the collection size
+    });
+    /*if() {
+      ref.where('artist.id', '==', email).onSnapshot((snap) => {
+        this.listNumberWorkingArtist = snap.size
+      })
+    }*/
   },
   methods: {
     signOut() {
       firebase
         .auth()
         .currentUser.getIdTokenResult()
-                    .then(tokenResult => {
-                        console.log(tokenResult.claims);
-                    })
         .signOut()
         .then(() => {
           this.$router.replace({
@@ -122,6 +118,13 @@ export default {
 };
 </script>
 <style lang="scss">
+.general {
+  display: flex;
+  .main-content-table {
+    width: calc(100% - 250px);
+    padding: var(--space-sm);
+  }
+}
 .login-box {
   position: absolute;
   left: 50%;

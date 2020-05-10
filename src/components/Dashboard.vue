@@ -1,6 +1,4 @@
 <template>
-  <div class="flex-main-panel">
-   <navbar></navbar>
 
     <div class="main-content-table">
       <div class="product-list">
@@ -157,7 +155,6 @@
         </table>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -177,7 +174,6 @@ export default {
     }),
   },
   components: {
-    navbar,
     gallery
   },
   data() {
@@ -236,7 +232,6 @@ export default {
   },
   mounted() {
     tablePersonal();
-    console.log(this.adminRole)
   },
 
   methods: {
@@ -292,13 +287,7 @@ export default {
   --sidenav-sublist-control-margin-right: 4px; // gap between sublist-control and main icon
 }
 
-.flex-main-panel {
-  display: flex;
-  .main-content-table {
-    width: calc(100% - 250px);
-    padding: var(--space-sm);
-  }
-}
+
 
 .sidenav__list .sidenav__list {
   // sublist

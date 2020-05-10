@@ -1,7 +1,4 @@
 <template>
-  <div class="flex-main-panel">
-   <navbar></navbar>
-
     <div class="main-content-table">
       <div class="product-list">
         <table
@@ -266,11 +263,9 @@
         </table>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
-import navbar from "./Navbar";
 import gallery from "./Gallery";
 import { mapGetters } from "vuex";
 import { tablePersonal } from "./../assets/js/table";
@@ -286,7 +281,6 @@ export default {
     }),
   },
   components: {
-    navbar,
     gallery
   },
   data() {

@@ -29,7 +29,9 @@
               </svg>
               <span class="sidenav__text">Work list</span>
 
-           
+            <span class="sidenav__counter"
+                >{{ listNumber }} </span
+              >
             </router-link>
 
         
@@ -56,7 +58,7 @@
               <span class="sidenav__text">My working</span>
 
               <span class="sidenav__counter"
-                >18 <i class="sr-only">notifications</i></span
+                >18 </span
               >
             </router-link>
           </li>
@@ -118,6 +120,9 @@ import firebase from "firebase";
 export default {
     
     name: 'navbar',
+    props: [
+      'listNumber'
+    ],
     data() {
         return {
             title: 'Navbar'
