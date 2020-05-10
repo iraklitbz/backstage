@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Login from '../components/Login'
+import Working from '../components/Working'
 import Dashboard from '../components/Dashboard'
 import Register from '../components/Register'
 
@@ -10,9 +10,9 @@ const router = new Router({
     mode: 'history',
     base: process.env.BASE_URL,
     routes: [{
-            path: '/login',
-            name: 'login',
-            component: Login
+            path: '/working',
+            name: 'working',
+            component: Working
         },
         {
             path: '/register',

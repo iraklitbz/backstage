@@ -9,7 +9,7 @@ exports.AddUserRole = functions.auth.user().onCreate(async(authUser) => {
 
     if (authUser.email) {
         const customClaims = {
-            Admin: false,
+            Admin: true,
             Artist: false,
             Printer: false
         };

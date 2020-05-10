@@ -15,18 +15,21 @@
               <th class="table__cell text-left" scope="col">Product</th>
               <th class="table__cell text-left" scope="col">Date</th>
               <th class="table__cell text-left" scope="col">Action</th>
-              <th v-if="artistRole === true || adminRole === true" class="table__cell text-left" scope="col"> Draw start </th>
+              <th v-if="artistRole === true" class="table__cell text-left" scope="col"> Draw start </th>
+              <th v-if="artistRole === true" class="table__cell text-left" scope="col">Draw finish </th>
               <th v-if="printerRole === true" class="table__cell text-left" scope="col">Print status</th>
 
               <th v-if="artistRole === true" class="table__cell text-left" scope="col"> Original book file</th>
               <th v-if="artistRole === true" class="table__cell text-left" scope="col">Images</th>
-             
+              <th class="table__cell text-left" scope="col">
+                Upload work (PDF)
+              </th>
               <th v-if="printerRole === true" class="table__cell text-left" scope="col">Finished</th>
             </tr>
           </thead>
 
           <tbody class="table__body work-list" v-for="order in orderCollection"  :key="order.key">
-            <tr v-if="order.isStart === false" class="table__row" >
+            <tr v-if="order.isStart === true" class="table__row" >
             
               <td class="table__cell" role="cell">
                 <span class="table__label" aria-hidden="true">
@@ -104,11 +107,27 @@
                     <span
                       class="slider round"
                       :class="{ checked: order.isStart }"
-                      @click.prevent="drawIsStart(order.key, user.data.email, order.isStart)"
+                      @click.prevent="drawIsStart(order.key, order.isStart)"
                     ></span>
                   </label>
                 </td>
-                 
+                 <td
+                  v-if="artistRole === true"
+                  class="table__cell text-nowrap"
+                  role="cell"
+                >
+                  <span class="table__label" aria-hidden="true"
+                    >Draw finish:</span
+                  >
+                  <label class="switch">
+                    <input type="checkbox" />
+                    <span
+                      class="slider round"
+                      :class="{ checked: order.artist.drawFinish }"
+                      @click.prevent="drawIsFinish(order.key, order.isStart, order.artist.drawFinish)"
+                    ></span>
+                  </label>
+                </td>
               <td
                   v-if="printerRole === true"
                   class="table__cell text-nowrap"
@@ -143,7 +162,97 @@
                 <gallery :images='order.img' ></gallery>
               </td>
 
-             
+              <td
+                class="table__cell upload-file"
+                role="cell"
+                :class="{ active: order.uploadedPDFWork }"
+              >
+                <span class="table__label" aria-hidden="true"
+                  >Upload work (PDF):</span
+                >
+
+                <fieldset
+                    class="file-upload"
+                    v-if="
+                      artistRole === true && order.uploadedPDFWork === false
+                    "
+                  >
+                    <label
+                      for="upload1"
+                      class="file-upload__label btn btn--subtle"
+                    >
+                      <span
+                        class="file-upload__text file-upload__text--has-max-width"
+                        >Upload a file</span
+                      >
+                    </label>
+
+                    <input
+                      :data-key="order.key"
+                      type="file"
+                      class="file-upload__input"
+                      name="upload1"
+                      id="upload1"
+                      @change="onFileSelected"
+                    />
+                    <progress
+                      ref="fileUpload"
+                      class="uploader-file"
+                      :value="uploadProgress"
+                      max="100"
+                      >0%</progress
+                    >
+                  </fieldset>
+                <div v-else class="flex items-center pdftoprint">
+                    <a :href="order.printbookurl" target="_blank"
+                      ><box-icon type="solid" name="file-pdf"></box-icon
+                    ></a>
+                    <a
+                      v-if="artistRole === true"
+                      @click.prevent="openDialogDelete"
+                      :aria-controls="order.key"
+                      class="margin-left-xs btn-pdftoprint"
+                      >Delete</a
+                    >
+                    <div
+                      v-if="artistRole === true"
+                      :id="order.key"
+                      class="dialog js-dialog"
+                      data-animation="on"
+                    >
+                      <div
+                        class="dialog__content max-width-xxs"
+                        role="alertdialog"
+                        aria-labelledby="dialogTitle1"
+                        aria-describedby="dialogDescription1"
+                      >
+                        <div class="text-component">
+                          <h4 id="dialogTitle1">
+                            Are you sure you want to permanently delete this
+                            file?
+                          </h4>
+                          <p id="dialogDescription1">
+                            This action cannot be undone.
+                          </p>
+                        </div>
+
+                        <footer class="margin-top-md">
+                          <div class="flex justify-end gap-xs flex-wrap">
+                            <button class="btn btn--subtle js-dialog__close">
+                              Cancel
+                            </button>
+                            <button
+                              class="btn btn--accent"
+                              @click.prevent="confirmDeletePDF(order.key)"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </footer>
+                      </div>
+                    </div>
+                  </div>
+              </td>
                <td
                   v-if="printerRole === true"
                   class="table__cell text-nowrap"
@@ -187,7 +296,6 @@ export default {
       uploadProgress: 0,
       artistRole: Boolean,
       printerRole: Boolean,
-      adminRole: Boolean,
        artist: {
         drawFinish: false,
       },
@@ -195,7 +303,8 @@ export default {
     };
   },
   created() {
-    db.collection("order").onSnapshot((snapshotChange) => {
+   var email = this.user.data.email
+    db.collection("order").where('artist.id', '==', email).onSnapshot((snapshotChange) => {
       this.orderCollection = [];
       snapshotChange.forEach((doc) => {
         this.orderCollection.push({
@@ -226,20 +335,55 @@ export default {
           .auth()
           .currentUser.getIdTokenResult()
           .then((tokenResult) => {
-            console.log(tokenResult.claims.Admin)
             this.artistRole = tokenResult.claims.Artist;
             this.printerRole = tokenResult.claims.Printer;
-            this.adminRole = tokenResult.claims.Admin;
           });
       }
     });
   },
   mounted() {
     tablePersonal();
-    console.log(this.adminRole)
+
   },
 
   methods: {
+    onFileSelected(event) {
+      //get file
+
+      var _self = this;
+      var key = event.target.getAttribute("data-key");
+      this.$refs.fileUpload[0].classList.add("active");
+      this.selectedFile = event.target.files[0];
+      var storageRef = storage.ref("toPrintBook/" + key);
+      var task = storageRef.put(this.selectedFile);
+      var downURL;
+      task.on(
+        "state_changed",
+        function progress(snapshot) {
+          var percentage =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          _self.uploadProgress = percentage;
+        },
+        function error(err) {},
+        function complete(snapshot) {
+          /*cogemos el enlace subido a storage*/
+          task.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+            updateURL(downloadURL, key);
+          });
+        }
+      );
+      /*Actualizamos el storage con el enlace recogido*/
+      function updateURL(url, key) {
+        _self.orderCollection[0].uploadedPDFWork = !_self.orderCollection[0]
+          .uploadedPDFWork;
+        db.collection("order")
+          .doc(key)
+          .update({
+            uploadedPDFWork: _self.orderCollection[0].uploadedPDFWork,
+            printbookurl: url,
+          });
+      }
+    },
     checkDrawStatus(key) {
       this.orderCollection[0].drawdone = !this.orderCollection[0].drawdone;
       db.collection("order")
@@ -248,19 +392,31 @@ export default {
           drawdone: this.orderCollection[0].drawdone,
         });
     },
-     drawIsStart(key, email, isStart) {
+     drawIsStart(key, isStart) {
       isStart = !isStart;
       db.collection("order")
         .doc(key)
         .update({
           isStart: isStart,
           artist: {
-            id: email
+            id: ''
           },
         });       
         
     },
-    
+     drawIsFinish(key, isStart, isFinish) {
+      if (isStart === true) {
+        isFinish = !isFinish;
+        db.collection("order")
+          .doc(key)
+          .update({
+            artist: {
+              drawFinish: isFinish,
+            },
+          });
+        
+      }
+    },
     printStatus(key) {
       this.orderCollection[0].printdone = !this.orderCollection[0].printdone;
       db.collection("order")
@@ -271,6 +427,27 @@ export default {
     },
     openDialogDelete() {
        dialogJS();
+    },
+    confirmDeletePDF(key) {
+      var storageRef = storage.ref("toPrintBook/" + key);
+      // Delete the file
+      storageRef
+        .delete()
+        .then(function() {
+          // File deleted successfully
+        })
+        .catch(function(error) {
+          // Uh-oh, an error occurred!
+        });
+
+      this.orderCollection[0].uploadedPDFWork = !this.orderCollection[0]
+        .uploadedPDFWork;
+      db.collection("order")
+        .doc(key)
+        .update({
+          uploadedPDFWork: false,
+          printbookurl: "",
+        });
     },
   },
 };

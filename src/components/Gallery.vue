@@ -15,7 +15,7 @@
 <div id="expLightbox" class="modal exp-lightbox bg js-modal js-exp-lightbox" data-animation="on" data-modal-first-focus=".js-exp-lightbox__body">
   <div class="exp-lightbox__content">
     <header class="exp-lightbox__header">
-      <h1 class="exp-lightbox__title">{{img}}</h1>
+      <h1 class="exp-lightbox__title">forget</h1>
 
       <menu class="menu-bar ">
       

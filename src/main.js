@@ -4,9 +4,10 @@ import router from "./routes/index";
 import * as firebase from "firebase";
 import store from "./store";
 import './static/app.scss'
+import lodash from 'lodash'
 
 Vue.config.productionTip = false;
-
+Object.defineProperty(Vue.prototype, '$_', { value: _ });
 const configOptions = {
     apiKey: "AIzaSyA4IzWBwKggZ7nAC06Gm0V5AEAz0tfC-WI",
     authDomain: "backstage-aa43c.firebaseapp.com",
